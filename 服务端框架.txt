@@ -1,0 +1,92 @@
+项目框架总览（ FastAPI）
+
+一、框架与运行方式
+1) Web 框架：FastAPI
+2) ASGI 服务器：Uvicorn
+3) 数据库：MongoDB（PyMongo）
+4) 认证：JWT（Bearer Token）
+5) 主入口：app/main.py
+   - 挂载 /api 子应用（业务接口）
+   - 暴露 /files 静态/文件下载路径
+
+说明：
+- 该项目是 FastAPI + Uvicorn 的 ASGI 架构。
+
+
+二、核心目录结构
+1) app/
+   - main.py                应用入口、路由挂载、中间件
+   - config.py              环境配置
+   - db.py                  Mongo 连接
+   - deps.py                鉴权依赖（当前用户）
+   - schemas.py             请求/响应模型（Pydantic）
+   - security.py            JWT/密码相关
+
+2) app/routers/（接口层）
+   - auth.py                登录/注册/当前用户
+   - accounts.py            账号管理（当前为单账号策略）
+   - chat.py                对话主接口
+   - conversations.py       会话历史
+   - doc.py                 文档理解
+   - upload.py              文件上传
+   - asr.py / voice.py      语音识别与语音相关
+   - avatar.py              头像/视频生成
+   - profile_story.py       成长档案生成/保存/历史
+   - profile_share.py       档案导出与分享
+   - public_share.py        对外分享访问
+
+3) app/services/（业务能力层）
+   - ai.py                  大模型统一调用（qwen）
+   - rag.py                 检索增强
+   - documents.py           文档提取解析
+   - tts.py                 文本转语音
+   - wanx.py                万象图像/视频能力
+   - oss.py                 OSS 上传/签名
+   - profile_exports.py     档案导出相关
+
+4) scripts/（调试脚本）
+   - 各类 debug_*.py        联调与问题定位脚本
+   - wanx_i2v_audio_demo.py 万象视频+音频独立验证脚本
+
+
+三、接口调用链（简化）
+前端请求 -> app/routers/*.py -> app/services/*.py -> 外部模型/OSS/Mongo -> 返回 ApiResponse
+
+
+四、脚本简要说明（scripts/）
+1) debug_asr_env.py
+   - 检查 ASR 相关环境与依赖可用性。
+
+2) debug_chat_history.py
+   - 排查聊天历史读写与会话关联问题。
+
+3) debug_chat_vision_flow.py
+   - 验证图像输入到视觉问答链路。
+
+4) debug_doc_interpret.py
+   - 验证文档理解接口与文本抽取效果。
+
+5) debug_embeddings.py
+   - 检查向量/Embedding 调用与结果。
+
+6) debug_vision.py
+   - 单独验证视觉模型能力。
+
+7) debug_voice_flow.py
+   - 检查语音上传、识别、返回链路。
+
+8) debug_xlsx_extract.py
+   - 验证 xlsx 文档抽取逻辑。
+
+9) test_qwen.py
+   - 对 qwen 模型进行基础连通与返回测试。
+
+10) wanx_i2v_audio_demo.py
+   - 独立调用万象视频模型，支持本地图片/音频输入、对照测试，
+   - 用于排除前端与业务接口干扰，定位模型侧问题。
+
+
+五、维护建议（简要）
+1) 路由层只做参数校验和编排，复杂逻辑下沉到 services。
+2) 新增能力时，优先在 scripts 增加独立调试脚本，便于快速定位。
+3) 外部模型超时/非 JSON 输出建议在服务层统一兜底与日志化。

@@ -1,0 +1,160 @@
+项目现状总结
+时间：2026-03-06
+项目路径：e:\BaiduNetdiskDownload\012011000\012011000\uniapp\my-vue3-project
+
+一、项目介绍
+1) 项目类型
+- 基于 uni-app + Vue3 + uview-plus 的多端前端项目（支持 H5、App 构建脚本）。
+- 项目主题是“AI 学习助手/数字老师”，包含聊天、数字人形象、成长档案、账号与登录等功能模块。
+
+2) 技术结构
+- 前端核心目录：src/pages（页面）、src/services（接口封装）、src/main.js、src/pages.json。
+- 接口调用统一走 src/services/http.js + src/services/api.js。
+- 登录态使用本地存储 token（src/services/storage.js）。
+- 用户基础资料使用本地存储（src/services/userProfile.js）。
+- 项目内含大量后端接口文档（backend-apis、docs），用于前后端联调。
+
+3) 部署与联调特征
+- Vite 代理与 API 源都指向同一后端域名：
+	https://jkyhobdhqqah.sealoshzh.site
+- H5 开发态通过 /api 代理，生产/非 H5 走线上域名。
+
+
+二、已实现功能（前端已落地）
+
+A. 登录与账号基础
+1) 登录/注册页面可用
+- 页面：src/pages/login/index.vue
+- 已接入 apiLogin / apiRegister，并保存 token。
+- 登录成功可跳转聊天页，失败有错误提示。
+
+2) 账号管理基础能力已接入
+- 页面：src/pages/account/index.vue
+- 已接入 apiMe、apiListAccounts、apiSwitchAccount、apiDeleteAccount。
+- 已实现退出登录（清 token）。
+
+
+B. 聊天主流程
+1) 聊天页完整 UI 与发送流程已实现
+- 页面：src/pages/chat/index.vue
+- 支持输入消息、发送、接收回复、加载会话历史、会话创建。
+
+2) 聊天附件能力已实现
+- 支持图片上传：apiUploadChatImage -> /upload/image
+- 支持文件上传：apiUploadChatFile -> /upload/file
+- 支持待发送附件预览与删除。
+
+3) 历史会话能力已实现
+- 页面：src/pages/history/index.vue
+- 支持拉取会话列表、新建会话、进入会话、长按删除会话。
+- 聊天页支持根据 conversationId 拉取历史消息。
+
+4) 推荐问题能力已实现（含预设）
+- 优先请求后端 recommendations。
+- 后端不可用时自动回退到本地推荐池，不阻塞体验。
+
+
+C. 语音交互（聊天）
+1) 微信式按住说话交互已实现
+- 按下开始录音、松开发送确认、取消发送。
+
+2) 语音上传与语音理解链路已接入
+- 上传：apiUploadVoice -> /upload/voice
+- 理解：apiVoiceChat -> /voice/chat
+- 语音返回文本后会直接触发发送流程。
+
+
+D. 数字卡通形象（Avatar）
+1) 四步向导已实现
+- 页面：src/pages/avatar-custom/index.vue
+- Step1 外貌图片采集并上传（/avatar/upload）
+- Step2 画像信息填写（年龄/兴趣/风格）
+- Step3 声线（预设 + 录音提取）
+- Step4 生成结果预览
+
+2) 头像生成能力已接入
+- apiAvatarGenerate -> /avatar/generate
+- 结果保存为 active_avatar，聊天页可读取并展示。
+
+3) 动态头像/视频能力已接入
+- 创建任务：apiAvatarVideoGenerateByImage -> /avatar/video/generate
+- 轮询状态：apiAvatarVideoStatus -> /avatar/video/status
+- 支持任务恢复、超时处理、成功后视频预览。
+
+4) 草稿恢复能力已实现
+- 头像定制流程支持本地草稿自动保存与恢复。
+
+
+E. 个人档案与成长档案
+1) 个人档案页面已实现
+- 页面：src/pages/profile/index.vue
+- 支持编辑姓名/学习目标/偏好，本地持久化。
+
+2) 成长档案生成页已实现
+- 页面：src/pages/profile-story/index.vue
+- 支持两种素材来源：会话多选 / 上传资料
+- 支持生成、复制、保存到档案。
+
+3) 已保存档案列表页已实现
+- 页面：src/pages/profile-stories/index.vue
+- 支持刷新、打开详情、删除。
+
+4) 档案详情页已实现
+- 页面：src/pages/profile-story-detail/index.vue
+- 支持编辑并保存、复制全文、导出、分享、撤销分享、删除。
+
+
+三、未实现或部分实现功能
+
+1) 设置页
+- 页面：src/pages/settings/index.vue
+- 当前仅“返回”，未实现偏好、通知、隐私、关于等功能。
+
+2) 更多页“待设计”
+- 页面：src/pages/more/index.vue
+- 目前只是账号管理/设置入口，不是完整“更多功能中心”。
+
+3) 账号管理是“部分完成”
+- 文件中有 switch/add/delete 方法，但页面没有完整挂接对应交互入口。
+- 账号列表当前代码仅保留第一个账号（slice(0, 1)），多账号能力被弱化。
+
+4) 文档解读接口仅预留，未在页面实际使用
+- apiDocInterpret 已定义（/doc/interpret），但无页面调用。
+
+5) 若干 API 封装待开发
+- apiCreateAccount 未被页面调用。
+- apiAvatarVideoGenerate（旧模板版）未被页面调用。
+- apiGetTask 未被页面调用。
+
+6) 旧 ASR 通道基本处于保留态
+- apiAsr 仍存在。
+- chat 页中 apiSpeechToText 仅定义未调用，主链路已切换到 /voice/chat。
+
+7) 附件“仅附件发送”交互存在断层
+- onSend 逻辑允许“只发附件不发文字”。
+- 但发送按钮可用性仅由文本输入控制（canSend 只看输入框文本），导致纯附件发送入口受限。
+
+8) 项目中存在未完成/遗留文件
+- src/utils/request.ts 为未完成片段，不在主请求链路中。
+- src/stores 目录为空。
+- src/pages/index/index.vue 存在，但未注册在 pages.json 中（旧入口/兼容遗留）。
+
+
+
+四、项目完成度结论
+
+1) 当前项目状态
+- 已达到“可运行的前端原型 + 多模块联调版”水平。
+- 聊天、登录、历史会话、数字人、成长档案主流程已基本打通。
+
+2) 建议优先级（短期）
+- P0：补齐设置页与账号管理完整交互。
+- P0：修复“纯附件发送”交互断层。
+- P1：落地文档解读页并接入 apiDocInterpret。
+- P1：清理未使用 API 与遗留文件，统一后端 OpenAPI 文档。
+
+
+五、遍历说明
+- 本次已遍历并核对项目核心源码与文档目录：
+	src/pages、src/services、src/main.js、src/pages.json、src/manifest.json、vite.config.js、FRONTEND_TODO_CHAT_MEMORY.md、backend-apis、docs、backend-account-todo、backend-auth-todo。
+- node_modules 与 dist 属于依赖/构建产物，未作为功能实现依据。

@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "code": "",
+  "message": "",
+  "data": {
+    "accessToken": "<jwt_or_any_token>",
+    "expiresIn": 7200,
+    "user": {
+      "id": "u_123",
+      "name": "小明",
+      "account": "test@example.com"
+    }
+  }
+}

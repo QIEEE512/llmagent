@@ -1,0 +1,77 @@
+{
+	"pages": [ 
+		{
+			"path": "pages/chat/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/history/index",
+			"style": {
+				"navigationBarTitleText": "历史对话"
+			}
+		},
+		{
+			"path": "pages/avatar-custom/index",
+			"style": {
+				"navigationBarTitleText": "数字卡通形象"
+			}
+		},
+		{
+			"path": "pages/account/index",
+			"style": {
+				"navigationBarTitleText": "账号管理"
+			}
+		},
+		{
+			"path": "pages/settings/index",
+			"style": {
+				"navigationBarTitleText": "设置"
+			}
+		},
+		{
+			"path": "pages/more/index",
+			"style": {
+				"navigationBarTitleText": "更多"
+			}
+		},
+		{
+			"path": "pages/login/index",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/profile/index",
+			"style": {
+				"navigationBarTitleText": "个人档案"
+			}
+		}
+		,
+		{
+			"path": "pages/profile-story/index",
+			"style": {
+				"navigationBarTitleText": "成长档案"
+			}
+		},
+		{
+			"path": "pages/profile-stories/index",
+			"style": {
+				"navigationBarTitleText": "成长档案"
+			}
+		},
+		{
+			"path": "pages/profile-story-detail/index",
+			"style": {
+				"navigationBarTitleText": "档案详情"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "我的数字老师",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	}
+}

@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "code": "",
+  "message": "",
+  "data": {
+    "answer": "天空看起来是蓝色的，主要因为阳光进入大气后发生了散射……",
+    "conversationId": "c_001",
+    "messageId": "m_100"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "code": "",
+  "message": "",
+  "data": {
+    "avatarPngUrl": "https://cdn.example.com/avatar/avt_001.png",
+    "videoUrl": "https://cdn.example.com/avatar/avt_001.mp4",
+    "jobId": "job_001"
+  }
+}

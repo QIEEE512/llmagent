@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "code": "",
+  "message": "注册成功",
+  "data": {
+    "userId": "u_123"
+  }
+}

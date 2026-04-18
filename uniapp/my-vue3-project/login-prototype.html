@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light" />
+  <title>登录</title>
+  <style>
+    :root{
+  /* 对齐主界面（uView 主题）蓝绿系 */
+  --bg1:#88E6FF;
+  --bg2:#66D9E8;
+  --bg3:#4ECDC4;
+      --card:#ffffff;
+      --text:#1b1f2a;
+      --muted:#7b8297;
+      --line:rgba(27,31,42,.10);
+  --primary:#4ECDC4;
+  --primary2:#66D9E8;
+      --shadow:0 18px 45px rgba(8, 24, 90, .26);
+      --shadow2:0 10px 30px rgba(8, 24, 90, .16);
+      --radius:18px;
+      --radius2:14px;
+  --ring: 0 0 0 4px rgba(78, 205, 196, .18);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 520px at 10% 8%, rgba(255,255,255,.22), transparent 55%),
+  radial-gradient(900px 520px at 100% 18%, rgba(102,217,232,.22), transparent 55%),
+        radial-gradient(700px 520px at 70% 100%, rgba(255,255,255,.12), transparent 55%),
+  linear-gradient(160deg, var(--bg1) 0%, var(--bg2) 45%, var(--bg3) 100%);
+      overflow:hidden;
+    }
+
+    /* 强制移动端预览：用一个“手机画板”固定宽高，打开网页就是移动端效果 */
+    .stage{
+      width:min(420px, 100vw);
+      height: min(860px, 100vh);
+      margin: 0 auto;
+      position: relative;
+      padding: 22px 18px 18px;
+      display:flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 顶部装饰条（模仿参考图的紫色栏） */
+    .top-bar{
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height: 56px;
+      background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0));
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+      transform: translateZ(0);
+    }
+
+    /* 右侧几何插画 */
+    .art{
+      position:absolute;
+      right: -22px;
+      top: 116px;
+      width: 210px;
+      height: 380px;
+      pointer-events:none;
+      opacity:.95;
+      filter: drop-shadow(0 22px 40px rgba(0,0,0,.25));
+    }
+
+    /* 登录卡片 */
+    .card{
+      width: 92%;
+      max-width: 360px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 22px 18px 18px;
+      position: relative;
+      overflow:hidden;
+    }
+
+  .card::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background:
+    radial-gradient(520px 260px at 16% 6%, rgba(78,205,196,.16), transparent 55%),
+    radial-gradient(420px 220px at 100% 0%, rgba(102,217,232,.14), transparent 60%);
+      pointer-events:none;
+    }
+
+    .brand{
+      position:relative;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+
+    .brand .logo{
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+  background: linear-gradient(145deg, rgba(78,205,196,1), rgba(102,217,232,.92));
+  box-shadow: 0 10px 18px rgba(78,205,196,.24);
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-weight:800;
+      letter-spacing:.5px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .brand .logo::after{
+      content:"";
+      position:absolute;
+      width: 90px;
+      height: 90px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), transparent 55%);
+      transform: translate(-22px, -22px);
+      opacity:.8;
+    }
+
+    .brand .name{
+      font-weight: 800;
+      font-size: 15px;
+      color: #2a2f3e;
+      letter-spacing:.2px;
+    }
+
+    h1{
+      position:relative;
+      margin: 6px 0 4px;
+      font-size: 20px;
+      letter-spacing:.2px;
+    }
+
+    .subtitle{
+      position:relative;
+      margin: 0 0 14px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing:.4px;
+      text-transform: uppercase;
+    }
+
+    .form{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .field{
+      background: rgba(255,255,255,.86);
+      border: 1px solid rgba(27,31,42,.06);
+      border-radius: var(--radius2);
+      padding: 12px 12px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      box-shadow:
+        0 10px 22px rgba(20, 27, 61, .08),
+        0 2px 0 rgba(255,255,255,.75) inset;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    /* 密码卡片：更“软”的渐变与细描边 */
+    .field.password{
+      background:
+        radial-gradient(260px 120px at 20% 10%, rgba(255,255,255,.95), rgba(255,255,255,.72)),
+        linear-gradient(180deg, rgba(255,255,255,.86), rgba(245, 251, 251, .86));
+      border: 1px solid rgba(78,205,196,.18);
+    }
+
+    .field:focus-within{
+  border-color: rgba(78,205,196,.55);
+  box-shadow: 0 14px 26px rgba(78,205,196,.14);
+      transform: translateY(-1px);
+    }
+
+    .icon{
+      width: 22px;
+      height: 22px;
+      flex: 0 0 auto;
+  color: rgba(78,205,196,.92);
+      opacity:.95;
+    }
+
+    input{
+      border:0;
+      outline:none;
+      width:100%;
+      font-size: 14px;
+      background: transparent;
+      color: var(--text);
+      padding: 2px 0;
+    }
+
+    input::placeholder{color: rgba(123,130,151,.92)}
+
+    .toggle{
+      border:0;
+      background: transparent;
+      padding: 6px;
+      border-radius: 10px;
+      cursor:pointer;
+      color: rgba(123,130,151,.92);
+      transition: background .15s ease, transform .12s ease;
+    }
+
+    .toggle:active{transform: scale(.96)}
+    .toggle:hover{background: rgba(59,91,255,.08)}
+
+    .toggle{
+      color: rgba(27,31,42,.42);
+    }
+
+    .toggle:hover{background: rgba(78,205,196,.10)}
+
+    .row{
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      margin-top: 2px;
+      padding: 0 2px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .check{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      user-select:none;
+    }
+
+    .check input{
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+      cursor:pointer;
+    }
+
+    .link{
+  color: rgba(22, 122, 118, .95);
+      text-decoration:none;
+      font-weight: 600;
+    }
+
+    .link:active{opacity:.75}
+
+    .row2{
+      margin-top: 8px;
+      display:flex;
+      align-items:center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .pill-link{
+      display:inline-flex;
+      align-items:center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      text-decoration:none;
+      font-weight: 800;
+      color: rgba(22, 122, 118, .95);
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(78, 205, 196, .18);
+      box-shadow: 0 12px 24px rgba(78, 205, 196, .12);
+      transition: transform .12s ease, background .12s ease;
+    }
+
+    .pill-link:active{transform: scale(.98)}
+
+    .btn{
+      margin-top: 8px;
+      border:0;
+      width:100%;
+      height: 44px;
+      border-radius: 999px;
+  background: linear-gradient(180deg, rgba(102, 217, 232, 1) 0%, rgba(78, 205, 196, 1) 55%, rgba(53, 186, 178, 1) 100%);
+      color:#fff;
+      font-weight: 800;
+      letter-spacing: .6px;
+      cursor:pointer;
+  box-shadow: 0 18px 30px rgba(78, 205, 196, .30);
+      position:relative;
+      overflow:hidden;
+      transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
+    }
+
+    .btn::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,.24) 20%, transparent 42%);
+      transform: translateX(-120%);
+    }
+
+    .btn:hover::before{animation: shine 1.1s ease}
+
+    .btn:active{
+      transform: translateY(1px) scale(.99);
+      filter: saturate(1.05);
+  box-shadow: 0 14px 22px rgba(78, 205, 196, .24);
+    }
+
+    .btn[disabled]{
+      opacity:.55;
+      cursor:not-allowed;
+      box-shadow: none;
+    }
+
+    @keyframes shine{
+      0%{transform: translateX(-120%)}
+      100%{transform: translateX(120%)}
+    }
+
+    .hint{
+      position:relative;
+      margin-top: 10px;
+      font-size: 11px;
+      color: rgba(123,130,151,.92);
+      line-height: 1.5;
+    }
+
+    .toast{
+      position:absolute;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%) translateY(18px);
+      background: rgba(15, 20, 35, .86);
+      color: rgba(255,255,255,.92);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      box-shadow: var(--shadow2);
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+      max-width: calc(100% - 36px);
+      text-align:center;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .toast.show{
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* 小小的“呼吸”动效让原型更有生命力 */
+    .float{
+      animation: float 6s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    @keyframes float{
+      0%,100%{transform: translateY(0)}
+      50%{transform: translateY(-8px)}
+    }
+
+    /* 可访问性：减少动画 */
+    @media (prefers-reduced-motion: reduce){
+      .float, .btn:hover::before{animation:none}
+      *{transition:none !important}
+    }
+
+    /* 小屏兜底 */
+    @media (max-height: 680px){
+      .stage{padding-top: 14px}
+      .art{top: 96px; height: 340px}
+      .card{padding: 18px 16px 16px}
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" role="application" aria-label="移动端登录原型">
+    <div class="top-bar" aria-hidden="true"></div>
+
+    <!-- 装饰插画（纯 SVG，不依赖图片） -->
+    <svg class="art float" viewBox="0 0 240 420" aria-hidden="true">
+      <defs>
+        <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#00D6FF" stop-opacity=".95" />
+          <stop offset="1" stop-color="#5B6BFF" stop-opacity=".95" />
+        </linearGradient>
+        <linearGradient id="g2" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffffff" stop-opacity=".85" />
+          <stop offset="1" stop-color="#BFD0FF" stop-opacity=".38" />
+        </linearGradient>
+        <filter id="blur" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="8" />
+        </filter>
+      </defs>
+
+      <path d="M210 30 C175 10 130 26 112 68 C96 106 115 145 146 160 C186 179 210 219 190 260 C171 298 126 314 90 297 C55 280 25 304 22 344 C18 395 70 417 112 404 C186 382 234 290 224 208 C216 132 247 55 210 30 Z" fill="url(#g1)" opacity=".85"/>
+      <circle cx="168" cy="90" r="46" fill="url(#g2)" opacity=".85"/>
+      <circle cx="110" cy="240" r="54" fill="#ffffff" opacity=".13" filter="url(#blur)"/>
+      <rect x="138" y="170" width="80" height="170" rx="18" fill="#ffffff" opacity=".14"/>
+      <rect x="122" y="204" width="56" height="126" rx="14" fill="#ffffff" opacity=".18"/>
+      <rect x="74" y="210" width="54" height="154" rx="16" fill="#ffffff" opacity=".12"/>
+      <rect x="86" y="200" width="12" height="174" rx="6" fill="#00D6FF" opacity=".25"/>
+      <rect x="158" y="190" width="12" height="200" rx="6" fill="#5B6BFF" opacity=".22"/>
+    </svg>
+
+  <main class="card" aria-label="账号密码登录">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">Q</div>
+        <div class="name">预留位置</div>
+      </div>
+
+      <h1>Hello, 欢迎登录</h1>
+      <div class="subtitle">WELCOME TO THE SYSTEM</div>
+
+  <!-- 登录表单 -->
+  <form class="form" id="loginForm" autocomplete="on">
+        <label class="field" aria-label="账号">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M20 21a8 8 0 0 0-16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <input id="account" name="account" inputmode="email" placeholder="请输入账号" autocomplete="username" required />
+        </label>
+
+  <label class="field password" aria-label="密码">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6.5 11h11A2.5 2.5 0 0 1 20 13.5v5A2.5 2.5 0 0 1 17.5 21h-11A2.5 2.5 0 0 1 4 18.5v-5A2.5 2.5 0 0 1 6.5 11Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 16v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input id="password" name="password" type="password" placeholder="请输入密码" autocomplete="current-password" required minlength="6" />
+          <button class="toggle" type="button" id="togglePwd" aria-label="显示/隐藏密码" title="显示/隐藏密码">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
+        </label>
+
+        <div class="row">
+          <label class="check">
+            <input id="remember" type="checkbox" />
+            <span>记住账号</span>
+          </label>
+          <a class="link" href="#" id="forgot">忘记密码？</a>
+        </div>
+
+        <div class="row2">
+          <span>还没有账号？</span>
+          <a class="pill-link" href="#" id="goRegister">注册账号</a>
+        </div>
+
+        <button class="btn" type="submit" id="submitBtn">登 录</button>
+
+        <div class="hint">
+          这是一个移动端登录原型（仅前端交互）。
+          <br/>推荐尺寸：宽 390px 左右。
+        </div>
+      </form>
+
+      <!-- 注册表单（默认隐藏） -->
+      <form class="form" id="registerForm" autocomplete="on" style="display:none">
+        <label class="field" aria-label="昵称">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M20 21a8 8 0 0 0-16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <input id="regName" name="regName" placeholder="请输入昵称" autocomplete="nickname" required />
+        </label>
+
+        <label class="field" aria-label="账号">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M4 7h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 7v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7" stroke="currentColor" stroke-width="2"/>
+            <path d="M9 11h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input id="regAccount" name="regAccount" inputmode="email" placeholder="请输入账号（邮箱/用户名）" autocomplete="username" required />
+        </label>
+
+        <label class="field" aria-label="手机号（可选）">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M7 3h10v18H7z" stroke="currentColor" stroke-width="2"/>
+            <path d="M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input id="regPhone" name="regPhone" inputmode="tel" placeholder="手机号（可选）" autocomplete="tel" />
+        </label>
+
+        <label class="field password" aria-label="密码">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6.5 11h11A2.5 2.5 0 0 1 20 13.5v5A2.5 2.5 0 0 1 17.5 21h-11A2.5 2.5 0 0 1 4 18.5v-5A2.5 2.5 0 0 1 6.5 11Z" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <input id="regPassword" name="regPassword" type="password" placeholder="设置密码（至少 6 位）" autocomplete="new-password" required minlength="6" />
+          <button class="toggle" type="button" id="toggleRegPwd" aria-label="显示/隐藏密码" title="显示/隐藏密码">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
+        </label>
+
+        <label class="field" aria-label="确认密码">
+          <svg class="icon" viewBox="0 0 24 24" fill="none">
+            <path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6.5 11h11A2.5 2.5 0 0 1 20 13.5v5A2.5 2.5 0 0 1 17.5 21h-11A2.5 2.5 0 0 1 4 18.5v-5A2.5 2.5 0 0 1 6.5 11Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M9 16l2 2 4-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <input id="regPassword2" name="regPassword2" type="password" placeholder="再次输入密码" autocomplete="new-password" required minlength="6" />
+        </label>
+
+        <button class="btn" type="submit" id="registerBtn">注 册</button>
+
+        <div class="row2">
+          <span>已有账号？</span>
+          <a class="pill-link" href="#" id="backToLogin">返回登录</a>
+        </div>
+
+        <div class="hint">
+          注册接口预留：POST /api/auth/register（示例）。
+          <br/>实际对接时请替换为你的后端账户数据库服务。
+        </div>
+      </form>
+
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <script>
+    const $ = (s) => document.querySelector(s);
+
+    const account = $('#account');
+    const password = $('#password');
+    const togglePwd = $('#togglePwd');
+    const form = $('#loginForm');
+  const registerForm = $('#registerForm');
+    const toast = $('#toast');
+    const submitBtn = $('#submitBtn');
+    const remember = $('#remember');
+  const goRegister = $('#goRegister');
+  const backToLogin = $('#backToLogin');
+
+  const regName = $('#regName');
+  const regAccount = $('#regAccount');
+  const regPhone = $('#regPhone');
+  const regPassword = $('#regPassword');
+  const regPassword2 = $('#regPassword2');
+  const toggleRegPwd = $('#toggleRegPwd');
+  const registerBtn = $('#registerBtn');
+
+    // 记住账号（原型交互）
+    const STORAGE_KEY = 'loginPrototype.account';
+    const remembered = localStorage.getItem(STORAGE_KEY);
+    if (remembered) {
+      account.value = remembered;
+      remember.checked = true;
+    }
+
+    const showToast = (msg) => {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      window.clearTimeout(showToast._t);
+      showToast._t = window.setTimeout(() => toast.classList.remove('show'), 1700);
+    };
+
+    const openRegister = () => {
+      // 切换标题文案，让用户知道在“注册”
+      document.title = '注册';
+      form.style.display = 'none';
+      registerForm.style.display = 'flex';
+      showToast('请填写注册信息');
+      setTimeout(() => regName?.focus(), 120);
+    };
+
+    const openLogin = () => {
+      document.title = '登录';
+      registerForm.style.display = 'none';
+      form.style.display = 'flex';
+      showToast('欢迎回来');
+      setTimeout(() => account?.focus(), 120);
+    };
+
+    // 后端接口预留：注册
+    async function apiRegister(payload) {
+      // payload: { name, account, phone, password }
+      // TODO: 替换为真实接口请求，如：fetch('/api/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+      await new Promise((r) => setTimeout(r, 900));
+      return { ok: true };
+    }
+
+    // 显示/隐藏密码
+    togglePwd.addEventListener('click', () => {
+      const isPwd = password.type === 'password';
+      password.type = isPwd ? 'text' : 'password';
+      togglePwd.style.color = isPwd ? 'rgba(59,91,255,.95)' : 'rgba(123,130,151,.92)';
+      showToast(isPwd ? '已显示密码' : '已隐藏密码');
+      password.focus();
+    });
+
+    // 忘记密码（原型提示）
+    $('#forgot').addEventListener('click', (e) => {
+      e.preventDefault();
+      showToast('原型演示：请联系管理员重置密码');
+    });
+
+    // 注册账号（原型：切换到注册表单）
+    goRegister.addEventListener('click', (e) => {
+      e.preventDefault();
+      openRegister();
+    });
+
+    backToLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      openLogin();
+    });
+
+    // 注册页：显示/隐藏密码
+    toggleRegPwd.addEventListener('click', () => {
+      const isPwd = regPassword.type === 'password';
+      regPassword.type = isPwd ? 'text' : 'password';
+      showToast(isPwd ? '已显示密码' : '已隐藏密码');
+      regPassword.focus();
+    });
+
+    // 注册提交
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = regName.value.trim();
+      const acc = regAccount.value.trim();
+      const phone = regPhone.value.trim();
+      const p1 = regPassword.value;
+      const p2 = regPassword2.value;
+
+      if (!name) return showToast('请输入昵称');
+      if (!acc) return showToast('请输入账号');
+      if (!p1 || p1.length < 6) return showToast('密码至少 6 位');
+      if (p1 !== p2) return showToast('两次密码不一致');
+
+      registerBtn.disabled = true;
+      const prev = registerBtn.textContent;
+      registerBtn.textContent = '注册中…';
+
+      try {
+        const res = await apiRegister({ name, account: acc, phone, password: p1 });
+        if (!res?.ok) throw new Error('register failed');
+
+        // 注册成功：把账号回填到登录页
+        account.value = acc;
+        showToast('注册成功，请登录');
+        openLogin();
+      } catch (err) {
+        showToast('注册失败（原型演示）');
+      } finally {
+        registerBtn.disabled = false;
+        registerBtn.textContent = prev;
+      }
+    });
+
+    // 回车提交与按钮态
+    const syncBtnState = () => {
+      const ok = account.value.trim().length > 0 && password.value.trim().length >= 6;
+      submitBtn.disabled = !ok;
+    };
+
+    account.addEventListener('input', syncBtnState);
+    password.addEventListener('input', syncBtnState);
+    syncBtnState();
+
+    // 提交（原型：模拟加载）
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const a = account.value.trim();
+      const p = password.value.trim();
+
+      if (!a) return showToast('请输入账号');
+      if (!p || p.length < 6) return showToast('密码至少 6 位');
+
+      if (remember.checked) localStorage.setItem(STORAGE_KEY, a);
+      else localStorage.removeItem(STORAGE_KEY);
+
+      submitBtn.disabled = true;
+      const prev = submitBtn.textContent;
+      submitBtn.textContent = '登录中…';
+
+      await new Promise((r) => setTimeout(r, 780));
+
+      submitBtn.textContent = prev;
+      syncBtnState();
+
+      showToast('登录成功（原型演示）');
+    });
+
+    // 初始聚焦更像移动端
+    window.addEventListener('load', () => {
+      setTimeout(() => account.focus(), 220);
+    });
+  </script>
+</body>
+</html>

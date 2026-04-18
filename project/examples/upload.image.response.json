@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "code": "",
+  "message": "",
+  "data": {
+    "url": "https://cdn.example.com/uploads/2026/01/image.png",
+    "mime": "image/png",
+    "size": 123456
+  }
+}

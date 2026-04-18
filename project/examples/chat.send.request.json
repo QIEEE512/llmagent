@@ -1,0 +1,12 @@
+{
+  "text": "为什么天空是蓝色的？",
+  "attachments": [
+    {
+      "type": "image",
+      "url": "https://cdn.example.com/uploads/image.png"
+    }
+  ],
+  "meta": {
+    "source": "composer"
+  }
+}

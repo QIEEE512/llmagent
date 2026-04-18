@@ -1,0 +1,11 @@
+{
+  "imageBase64": "data:image/jpeg;base64,...",
+  "imageUrl": "https://cdn.example.com/uploads/avatar_source.jpg",
+  "age": 10,
+  "gender": "male",
+  "interests": ["恐龙", "太空"],
+  "voiceStyle": "活泼男孩",
+  "audioBlob": {
+    "note": "前端目前是模拟对象；实际可用 audioUrl 或 multipart 上传"
+  }
+}

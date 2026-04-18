@@ -1,0 +1,113 @@
+本前端项目框架总结（uni-app + Vue3）
+====================================
+
+一、项目定位
+-----------
+这是一个基于 uni-app 的多端前端项目，核心业务包含：
+1) 聊天与会话历史
+2) 数字卡通形象生成与视频生成
+3) 成长档案生成、保存、详情、导出与分享
+4) 登录与单账号管理
+
+项目目标是“一套代码多端运行”，当前重点联调端包括 H5 与手机端。
+
+
+二、技术栈与运行基础
+-----------------
+1) 框架层
+   - uni-app (Vue3)
+   - Vue 3
+   - uview-plus 组件库
+
+2) 构建层
+   - Vite
+   - @dcloudio/vite-plugin-uni
+
+3) UI 层
+   - 主要采用 uview-plus 组件（u-button/u-input/u-card/u-toast 等）
+   - 页面样式采用 scoped 样式 + 渐变背景 + 卡片化布局
+
+4) 网络层
+   - 统一封装在 src/services/http.js
+   - 业务 API 封装在 src/services/api.js
+   - 成功兼容 ApiResponse，失败兼容 detail/message
+
+
+三、目录结构（前端核心）
+----------------------
+1) src/main.js
+   - 应用入口
+   - 安装 uview-plus
+   - 手动注册部分 uview 组件，避免部分端组件解析失败
+
+2) src/pages.json
+   - 页面注册与导航配置
+   - 当前主要页面：
+     - pages/chat/index 聊天页
+     - pages/history/index 历史会话
+     - pages/avatar-custom/index 形象定制
+     - pages/profile-story/index 成长档案生成
+     - pages/profile-stories/index 已保存档案列表
+     - pages/profile-story-detail/index 档案详情
+     - pages/account/index 账号管理
+     - pages/login/index 登录
+
+3) src/pages/
+   - 每个业务页面单文件组件
+   - 采用 script setup + 组合式 API
+
+4) src/services/
+   - http.js: 请求底层、鉴权头注入、错误归一化
+   - api.js: 所有业务接口函数（聊天、上传、头像、档案、分享等）
+   - storage.js: token 存取
+   - userProfile.js/profileShare.js: 档案与分享相关辅助逻辑
+
+5) src/utils/
+   - 通用工具（当前规模较轻）
+
+
+四、业务模块与数据流
+------------------
+1) 聊天模块
+   - 用户输入 -> 页面组装 payload -> apiChat
+   - 返回后更新消息列表与会话状态
+   - 已加发送防重，避免移动端重复触发
+
+2) 数字人模块
+   - 上传头像图 -> 生成静态形象 -> 触发视频生成任务 -> 轮询状态 -> 视频展示
+   - 前端只做展示与轮询，不做视频转码
+
+3) 成长档案模块
+   - 来源：会话选择 或 上传资料
+   - 生成接口：profile/story/generate 或 profile/story/extract
+   - 保存后进入 stories 列表，再进 detail 详情
+   - 已做新旧路径兼容（stories 与 story/list/detail）
+
+4) 账号模块（单账号策略）
+   - 只展示当前账号
+   - 隐藏新增/删除/切换入口
+   - 对旧代码触发的 409 统一提示“当前为单账号模式，不支持该操作”
+
+
+
+
+五、当前前端架构特点
+------------------
+1) 统一请求入口，接口集中管理，联调成本较低
+2) 页面业务边界清晰，聊天/形象/档案相对独立
+3) 兼容性意识较强（如路径兼容、错误码分流、跨端 API 兜底）
+
+
+六、快速使用建议（前端）
+------------------
+1) 安装依赖：npm install
+2) 本地开发：npm run dev:h5
+3) 核心联调页：
+   - 聊天：/pages/chat/index
+   - 形象：/pages/avatar-custom/index
+   - 档案生成：/pages/profile-story/index
+   - 档案列表：/pages/profile-stories/index
+   - 档案详情：/pages/profile-story-detail/index
+
+
+（完）
